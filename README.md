@@ -5,14 +5,17 @@
 ### 🔧 개발 환경
 
 #### 🧩 시스템 구성 요소
+
 - **프론트엔드**: React+TypeScript 기반 프로젝트
 - **백엔드**: Spring Boot REST API 서버
 - **AI**: LLM 응답을 위한 FASTAPI, 데이터 저장을 위해 젠킨스 공식 문서를 크롤링하여 Vector DB에 저장
 
 #### 사용 기술 스택 및 버전
+
 - **빌드 도구**:
   - 프론트엔드: Vite 6.3.1
   - 백엔드: Gradle 8.13
+  - 클라이언트: go 1.24.3
 - **프레임워크 및 주요 라이브러리**:
   - Spring Boot 3.4.2
   - Shell script
@@ -20,10 +23,14 @@
   - Jenkins API
   - React 18.3.1
   - TypeScript 5.7.3
+  - Wails v2.10.1
 
 ### 🔑 빌드 시 사용되는 환경 변수
+
 #### 백엔드(Spring Boot)
+
 `application.yml`
+
 ```
 spring:
   application:
@@ -128,7 +135,9 @@ ec2:
 ```
 
 #### 프론트엔드 (React + TypeScript)
+
 `.env`
+
 ```
 # APIs
 VITE_API_LOCAL_URL = "http://localhost:3000/api"
@@ -145,6 +154,7 @@ VITE_FAST_API_URL = "http://70.12.130.101:8000/api"
 ### 🚢 빌드 및 배포 방법
 
 #### Jenkins CI/CD 구성
+
 - Jenkins 서버 접근 포트: 8080
 - 배포 과정:
   1. Jenkins credentials에서 Gitlab 토큰값 로딩
@@ -154,24 +164,39 @@ VITE_FAST_API_URL = "http://70.12.130.101:8000/api"
   5. 캐시 없이 빌드: `docker-compose build --no-cache`
   6. 컨테이너 실행: `docker-compose up -d`
 
+#### 클라이언트 빌드
+
+- 빌드 과정:
+  1. 프로젝트 root 경로에서 `gradle -p ./Backend/ build -x test` 실행, 또는 백엔드 경로에서 `gradle build -x test` 실행
+  2. 프로젝트 root 경로에서 `wails build` 실행
+  3. `build/bin/` 내부의 OS별 실행 파일 실행
+
 ### ⚠️ 배포 시 특이사항
-#### 인프라 
+
+#### 인프라
+
 1. port가 열려 있어야 함
-  - 22(ssh) 
-  - 80(http) 
-  - 443(https)
-  - 8080(Jenkins)
+
+- 22(ssh)
+- 80(http)
+- 443(https)
+- 8080(Jenkins)
 
 2. SSL 설정
-  - /nginx/ssl/fullchain.pem
-  - /nginx/ssl/privkey.pem
+
+- /nginx/ssl/fullchain.pem
+- /nginx/ssl/privkey.pem
 
 ### 📦 프로젝트 종속성
+
 #### 1) 백엔드 종속성
+
 상기 작성한 application.yml 참고
 
 #### 2) 프론트 종속성
+
 `package.json`
+
 ```
 {
   "name": "DevPilot",
@@ -279,7 +304,9 @@ VITE_FAST_API_URL = "http://70.12.130.101:8000/api"
 ```
 
 #### 3) AI 종속성
+
 'requirements.txt'
+
 ```
 accelerate==1.6.0
 aiohttp==3.10.11
@@ -404,5 +431,7 @@ zipp==3.21.0
 ```
 
 ## 🔌 2. 프로젝트에서 사용하는 외부 서비스 정보
+
 ### pinecone (Vector DB)
+
 - 대규모 벡터 데이터를 빠르고 효율적으로 검색할 수 있도록 지원하는 클라우드 기반 벡터 데이터베이스
